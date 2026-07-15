@@ -15,24 +15,31 @@
     --font-display: 'Archivo Black', Arial, sans-serif;
     --font-body: 'Inter', Arial, sans-serif;
   }
-  @import url('https://googleapis.com');
+  @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&display=swap');
   *{box-sizing:border-box; margin:0; padding:0;}
   body{font-family:var(--font-body); color:var(--ink); background:var(--paper); -webkit-font-smoothing:antialiased;}
-  img{max-width:100%; display:block; width:100%; height:100%; object-fit:cover;}
+  img{max-width:100%; display:block;}
   a{color:inherit; text-decoration:none;}
   .wrap{max-width:1180px; margin:0 auto; padding:0 24px;}
 
   /* HEADER */
   header{position:sticky; top:0; z-index:50; background:var(--paper); border-bottom:1px solid var(--line);}
   .nav{display:flex; align-items:center; justify-content:space-between; padding:18px 24px;}
+  .logo img{height:52px; width:auto; display:block;}
   .logo{font-family:var(--font-display); font-size:20px; letter-spacing:0.5px; display:flex; align-items:center; gap:8px;}
   .nav-links a{position:relative; padding-bottom:4px; cursor:pointer;}
   .nav-links a:hover{color:var(--red);}
   .nav-links a.active{color:var(--red);}
   .nav-links a.active::after{content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:var(--red); border-radius:2px;}
-  
-  /* CART BUTTON */
-  .cart-btn{background:var(--ink); color:#fff; padding:10px 20px; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; border-radius:2px; cursor:pointer;}
+  /* CATEGORY CHIPS (mobile) */
+  .cat-chips{display:none; gap:8px; overflow-x:auto; padding:0 24px 16px; scrollbar-width:none;}
+  .cat-chip{background:var(--fog); border:1px solid var(--line); border-radius:20px; padding:7px 16px; font-size:12px; font-weight:700; white-space:nowrap; cursor:pointer; flex-shrink:0; transition:all .15s;}
+  .cat-chip.active{background:var(--ink); color:#fff; border-color:var(--ink);}
+  @media(max-width:900px){.cat-chips{display:flex;}}
+  /* HERO LOGO FIX - remove white bg using mix-blend-mode */
+  .hero-logo-img{width:100%; height:100%; object-fit:cover; filter:brightness(1.05);}
+  .nav-cta{display:flex; align-items:center; gap:18px;}
+  .cart-btn{background:var(--ink); color:#fff; padding:10px 20px; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; border-radius:2px;}
   .cart-btn:hover{background:var(--red);}
 
   /* HERO */
@@ -44,123 +51,574 @@
   .hero h1{font-family:var(--font-display); font-size:clamp(38px,5.5vw,64px); line-height:0.98; letter-spacing:-0.5px; margin-bottom:20px;}
   .hero h1 span{color:var(--red);}
   .hero p{font-size:16px; color:#cfcfcf; max-width:420px; margin-bottom:32px; line-height:1.6;}
-  .btn-primary{display:inline-block; background:var(--red); color:#fff; padding:15px 28px; font-weight:700; font-size:14px; text-transform:uppercase; letter-spacing:0.5px; border-radius:2px; transition:background .2s; cursor:pointer;}
+  .hero-btns{display:flex; gap:14px;}
+  .btn-primary{background:var(--red); color:#fff; padding:15px 28px; font-weight:700; font-size:14px; text-transform:uppercase; letter-spacing:0.5px; border-radius:2px; transition:background .2s;}
   .btn-primary:hover{background:var(--red-dark);}
-  
+  .btn-ghost{border:1px solid #555; color:#fff; padding:15px 28px; font-weight:700; font-size:14px; text-transform:uppercase; letter-spacing:0.5px; border-radius:2px;}
+  .btn-ghost:hover{border-color:#fff;}
   .hero-visual{position:relative; height:100%; min-height:560px; background:linear-gradient(160deg,#1a1a1a,#0c0c0c); overflow:hidden;}
-  .hero-img-bg{position:absolute; inset:0; opacity:0.6; width:100%; height:100%;}
-  
-  .hero-card{position:absolute; right:40px; bottom:40px; background:#fff; color:var(--ink); width:260px; padding:18px; border-radius:4px; box-shadow:0 20px 60px rgba(0,0,0,0.4); z-index:5;}
+  .hero-logo-bg{position:absolute; inset:0; display:flex; align-items:center; justify-content:center;}
+  .hero-logo-bg img{width:90%; height:90%; object-fit:contain; opacity:0.06; filter:grayscale(100%) brightness(2);}
+  .hero-logo-wrap{position:absolute; top:46%; left:50%; transform:translate(-50%,-50%); z-index:3; width:200px; height:200px; border-radius:50%; overflow:hidden; border:3px solid rgba(200,16,46,0.6); box-shadow:0 0 40px rgba(200,16,46,0.3);}
+  .hero-logo-img{width:100%; height:100%; object-fit:cover; filter:brightness(1.05);}
+  .hero-card{position:absolute; right:60px; top:50%; transform:translateY(-50%); background:#fff; color:var(--ink); width:260px; padding:18px; border-radius:4px; box-shadow:0 20px 60px rgba(0,0,0,0.4);}
   .hero-card .tag{display:inline-block; background:var(--red); color:#fff; font-size:11px; font-weight:700; padding:3px 8px; border-radius:2px; margin-bottom:10px;}
-  .hero-card h4{font-size:15px; margin-bottom:6px; color:var(--ink);}
+  .hero-card h4{font-size:15px; margin-bottom:6px;}
   .hero-card .price{font-size:14px; font-weight:800;}
   .hero-card .price del{color:#999; font-weight:400; margin-right:6px;}
 
-  /* PRODUCT SECTION */
-  .section{padding:80px 0; background:var(--paper);}
-  .section-head{margin-bottom:40px;}
+  /* MARQUEE */
+  .marquee{background:var(--red); color:#fff; padding:10px 0; overflow:hidden; white-space:nowrap; font-size:13px; font-weight:700; letter-spacing:1px; text-transform:uppercase;}
+  .marquee span{display:inline-block; padding-right:60px;}
+
+  /* SECTION HEADER */
+  .section{padding:80px 24px;}
+  .section-head{display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:36px; flex-wrap:wrap; gap:12px;}
+  .section-head h2{font-family:var(--font-display); font-size:clamp(26px,3.5vw,38px);}
+  .section-head p{color:#777; font-size:14px; max-width:340px;}
   .section-tag{font-size:12px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--red); margin-bottom:8px; display:block;}
-  .section-head h2{font-family:var(--font-display); font-size:32px; margin-bottom:10px;}
-  
-  /* GRID */
-  .grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:30px;}
+
+  /* PRODUCT GRID */
+  .grid{display:grid; grid-template-columns:repeat(4,1fr); gap:20px;}
   .card{border:1px solid var(--line); border-radius:4px; overflow:hidden; background:#fff; transition:transform .2s, box-shadow .2s;}
   .card:hover{transform:translateY(-4px); box-shadow:0 16px 30px rgba(0,0,0,0.08);}
-  .card-img{aspect-ratio:3/4; background:var(--fog); overflow:hidden;}
-  .card-body{padding:16px;}
-  .card-body h4{font-size:16px; font-weight:600; margin-bottom:8px;}
-  .price-now{font-weight:800; font-size:18px; color:var(--ink);}
-  .add-btn{margin-top:12px; width:100%; padding:12px; background:var(--ink); color:#fff; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; border-radius:2px; border:none; cursor:pointer;}
+  .card-img{aspect-ratio:3/4; background:var(--fog); position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden;}
+  .card-img img{width:100%; height:100%; object-fit:cover; transition:transform .3s;}
+  .card:hover .card-img img{transform:scale(1.05);}
+  .card-img .ph{font-family:var(--font-display); font-size:64px; color:#ddd;}
+  .badge{position:absolute; top:10px; left:10px; background:var(--red); color:#fff; font-size:11px; font-weight:700; padding:4px 9px; border-radius:2px;}
+  .card-body{padding:14px 16px 18px;}
+  .card-body h4{font-size:14px; font-weight:600; margin-bottom:8px; line-height:1.3; min-height:36px;}
+  .price-row{display:flex; align-items:baseline; gap:8px;}
+  .price-now{font-weight:800; font-size:16px;}
+  .price-old{font-size:13px; color:#aaa; text-decoration:line-through;}
+  .add-btn{margin-top:12px; width:100%; padding:10px; background:var(--ink); color:#fff; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; border-radius:2px; border:none; cursor:pointer; transition:background .2s;}
   .add-btn:hover{background:var(--red);}
+  .size-select{margin-top:10px; width:100%; padding:8px 10px; font-size:12px; border:1px solid var(--line); border-radius:2px; font-family:var(--font-body); background:#fff;}
+
+  /* FEATURES */
+  .features{background:var(--fog);}
+  .feat-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:32px;}
+  .feat{background:#fff; padding:34px 28px; border-radius:4px; border:1px solid var(--line);}
+  .feat .num{font-family:var(--font-display); color:var(--red); font-size:13px; margin-bottom:14px; letter-spacing:1px;}
+  .feat h3{font-size:18px; margin-bottom:10px;}
+  .feat p{font-size:14px; color:#777; line-height:1.6;}
+
+  /* BANNER */
+  .banner{background:var(--ink); color:#fff; display:grid; grid-template-columns:1fr 1fr; align-items:center; border-radius:6px; overflow:hidden; margin:0 24px;}
+  .banner-copy{padding:50px;}
+  .banner-copy span.section-tag{color:var(--red);}
+  .banner-copy h2{font-family:var(--font-display); font-size:32px; margin-bottom:16px; line-height:1.1;}
+  .banner-copy p{color:#bbb; font-size:14px; line-height:1.7; margin-bottom:26px; max-width:420px;}
+  .banner-visual{background:linear-gradient(135deg,var(--red),var(--red-dark)); height:100%; min-height:280px; position:relative;}
+  .banner-visual .jersey-number{color:rgba(255,255,255,0.15); right:10px;}
+
+  /* HERO STATS */
+  .hero-stats{display:flex; gap:32px; margin-top:32px; padding-top:24px; border-top:1px solid rgba(255,255,255,0.1);}
+  .stat{display:flex; flex-direction:column; gap:4px;}
+  .stat-num{font-family:var(--font-display); font-size:24px; color:#fff;}
+  .stat-label{font-size:11px; color:#aaa; text-transform:uppercase; letter-spacing:1px;}
+  /* HERO LOGO */
+  /* hero logo handled above */
+  /* SECTION DECORATION */
+  .section-head h2{position:relative; display:inline-block;}
+  .section-deco{display:flex; align-items:center; gap:12px; margin-bottom:10px;}
+  .section-deco::after{content:''; flex:1; height:1px; background:var(--line);}
+  /* FOOTER LOGO */
+  .foot-logo img{height:48px; width:auto; filter:brightness(10);}
+  .how-it-works{background:var(--ink);}
+  .how-it-works .section-tag{color:var(--red);}
+  .how-it-works .section-head h2{color:#fff;}
+  .how-it-works .section-head p{color:#999;}
+  .steps-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:0;}
+  .step{position:relative; padding:0 24px; text-align:center;}
+  .step-icon{width:64px; height:64px; border:2px solid var(--red); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:26px; margin:0 auto 20px; background:var(--ink); position:relative; z-index:2;}
+  .step-line{position:absolute; top:32px; left:calc(50% + 50px); width:calc(100% - 50px); height:2px; background:linear-gradient(90deg, var(--red), transparent); z-index:1;}
+  .step h3{color:#fff; font-size:17px; margin-bottom:10px;}
+  .step p{color:#999; font-size:13px; line-height:1.6; max-width:240px; margin:0 auto;}
+
+  /* ANIMATIONS */
+  @keyframes fadeUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+  @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+  @keyframes marqueeScroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+  @keyframes pulse{0%,100%{box-shadow:0 0 40px rgba(200,16,46,0.3);}50%{box-shadow:0 0 60px rgba(200,16,46,0.6);}}
+  @keyframes float{0%,100%{transform:translate(-50%,-50%) translateY(0);}50%{transform:translate(-50%,-50%) translateY(-10px);}}
+  .hero-copy{animation:fadeUp 0.8s ease both;}
+  .hero-copy .eyebrow{animation:fadeUp 0.6s ease both;}
+  .hero-copy h1{animation:fadeUp 0.8s 0.1s ease both;}
+  .hero-copy p{animation:fadeUp 0.8s 0.2s ease both;}
+  .hero-btns{animation:fadeUp 0.8s 0.3s ease both;}
+  .hero-stats{animation:fadeUp 0.8s 0.4s ease both;}
+  .hero-logo-wrap{animation:float 4s ease-in-out infinite, pulse 4s ease-in-out infinite;}
+  .marquee span{display:inline-block; animation:marqueeScroll 22s linear infinite; white-space:nowrap;}
+  .fade-up{opacity:0;transform:translateY(28px);transition:opacity 0.6s ease, transform 0.6s ease;}
+  .fade-up.visible{opacity:1;transform:translateY(0);}
+  .card{transition:transform .25s ease, box-shadow .25s ease;}
+  .card:hover{transform:translateY(-6px); box-shadow:0 20px 40px rgba(0,0,0,0.12);}
+  .card-img{cursor:pointer; position:relative;}
+  .card-overlay{position:absolute;inset:0;background:rgba(0,0,0,0);display:flex;align-items:center;justify-content:center;transition:background .2s;}
+  .view-label{color:#fff;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;opacity:0;transition:opacity .2s;}
+
+  /* PRODUCT MODAL */
+  .modal-overlay{display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:200; align-items:center; justify-content:center; padding:20px;}
+  .modal-overlay.open{display:flex; animation:fadeIn 0.2s ease;}
+  .modal-box{background:#fff; border-radius:6px; max-width:900px; width:100%; max-height:90vh; overflow-y:auto; display:grid; grid-template-columns:1fr 1fr; position:relative;}
+  .modal-close{position:absolute; top:14px; right:14px; width:34px; height:34px; background:var(--ink); color:#fff; border:none; border-radius:50%; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:10;}
+  .modal-close:hover{background:var(--red);}
+  .modal-gallery{background:var(--fog); display:flex; align-items:center; justify-content:center; min-height:380px; overflow:hidden;}
+  .modal-gallery img{width:100%; height:100%; object-fit:cover; max-height:500px;}
+  .modal-info{padding:32px 28px;}
+  .modal-info .section-tag{margin-bottom:8px;}
+  .modal-info h2{font-family:var(--font-display); font-size:22px; margin-bottom:14px; line-height:1.2;}
+  .modal-price-row{display:flex; align-items:baseline; gap:10px; margin-bottom:20px; flex-wrap:wrap;}
+  .modal-price-now{font-weight:800; font-size:26px; color:var(--ink);}
+  .modal-price-old{font-size:16px; color:#aaa; text-decoration:line-through;}
+  .modal-save{background:var(--red); color:#fff; font-size:11px; font-weight:700; padding:3px 8px; border-radius:2px; align-self:center;}
+  .modal-size-label{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:#777; margin-bottom:8px;}
+  .modal-sizes{display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap;}
+  .size-btn{border:1px solid var(--line); padding:8px 14px; font-size:13px; font-weight:600; border-radius:3px; cursor:pointer; background:#fff; transition:all .15s;}
+  .size-btn.active{border-color:var(--ink); background:var(--ink); color:#fff;}
+  .modal-add-btn{width:100%; background:var(--red); color:#fff; border:none; padding:15px; font-size:14px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; border-radius:3px; cursor:pointer; transition:background .2s; margin-bottom:12px;}
+  .modal-add-btn:hover{background:var(--red-dark);}
+  .modal-features{display:flex; gap:14px; font-size:12px; color:#777; flex-wrap:wrap; margin-top:12px;}
+  @media(max-width:680px){.modal-box{grid-template-columns:1fr;} .modal-gallery{min-height:260px;}}
+
+  /* FOOTER */
+  footer{background:var(--ink); color:#aaa; padding:60px 24px 24px;}
+  .foot-grid{display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:40px; padding-bottom:40px; border-bottom:1px solid #2a2a2a;}
+  .foot-logo{font-family:var(--font-display); color:#fff; font-size:20px; margin-bottom:14px;}
+  footer h5{color:#fff; font-size:13px; text-transform:uppercase; letter-spacing:1px; margin-bottom:16px;}
+  footer ul{list-style:none;}
+  footer li{margin-bottom:10px; font-size:14px;}
+  footer li a:hover{color:var(--red);}
+  .foot-bottom{display:flex; justify-content:space-between; padding-top:24px; font-size:13px; flex-wrap:wrap; gap:10px;}
+
+  @media (max-width:900px){
+    .nav-links{display:none;}
+    .hero-grid{grid-template-columns:1fr;}
+    .hero-visual{display:none;}
+    .grid{grid-template-columns:repeat(2,1fr);}
+    .feat-grid{grid-template-columns:1fr;}
+    .banner{grid-template-columns:1fr;}
+    .banner-visual{display:none;}
+    .steps-grid{grid-template-columns:1fr; gap:40px;}
+    .step-line{display:none;}
+    .foot-grid{grid-template-columns:1fr 1fr;}
+  }
 </style>
 </head>
 <body>
 
-  <!-- Header -->
-  <header>
-    <div class="nav wrap">
-      <div class="logo">Elite Sports Hub</div>
-      <div class="nav-links">
-        <a class="active">Home</a>
+<header>
+  <div class="nav">
+    <div class="logo"><img src="images/elite_logo.jpeg" alt="Elite Sports Hub"></div>
+    <nav class="nav-links">
+      <a onclick="filterCat('all',this)">All</a>
+      <a onclick="filterCat('new',this)" class="active">New Arrivals</a>
+      <a onclick="filterCat('football',this)">Football</a>
+      <a onclick="filterCat('ipl',this)">Cricket/IPL</a>
+      <a onclick="filterCat('special',this)">Special Edition</a>
+      <a onclick="filterCat('retro',this)">Retro</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="cart-checkout.html" class="cart-btn">Cart (0)</a>
+    </div>
+  </div>
+</header>
+
+<div class="cat-chips">
+  <div class="cat-chip" onclick="filterCat('all',this)">All</div>
+  <div class="cat-chip active" onclick="filterCat('new',this)">🆕 New Arrivals</div>
+  <div class="cat-chip" onclick="filterCat('football',this)">⚽ Football</div>
+  <div class="cat-chip" onclick="filterCat('ipl',this)">🏏 Cricket/IPL</div>
+  <div class="cat-chip" onclick="filterCat('special',this)">⭐ Special</div>
+  <div class="cat-chip" onclick="filterCat('retro',this)">🕰 Retro</div>
+</div>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow">Premium Jersey Store — Nepal</span>
+      <h1 style="font-family:var(--font-display); font-size:clamp(14px,2vw,18px); color:#fff; letter-spacing:2px; text-transform:uppercase; margin-bottom:10px;">Elite Sports Hub</h1>
+      <h1>Wear the<br><span>Victory.</span></h1>
+      <p>Top-grade football & cricket jerseys delivered across Nepal. Authentic designs, fan-perfect fit, prices that won't break your budget.</p>
+      <div class="hero-btns">
+        <a href="#product-grid" class="btn-primary">Shop Collection</a>
+        <a href="#product-grid" class="btn-ghost">New Arrivals</a>
       </div>
-      <div class="nav-cta">
-        <button class="cart-btn">Cart (0)</button>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num">500+</span><span class="stat-label">Orders Delivered</span></div>
+        <div class="stat"><span class="stat-num">50+</span><span class="stat-label">Jersey Designs</span></div>
+        <div class="stat"><span class="stat-num">100%</span><span class="stat-label">Satisfied Fans</span></div>
       </div>
     </div>
-  </header>
-
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="hero-grid wrap">
-      <div class="hero-copy">
-        <span class="eyebrow">New Arrival</span>
-        <h1>Premium <span>Jerseys</span> Collection</h1>
-        <p>Get high-quality, comfortable sports jerseys crafted for ultimate performance and style.</p>
-        <div class="hero-btns">
-          <a class="btn-primary">Shop Now</a>
-        </div>
+    <div class="hero-visual">
+      <div class="hero-logo-bg">
+        <img src="images/elite_logo.jpeg" alt="Elite Sports Hub">
       </div>
-      <div class="hero-visual">
-        <!-- Live Sports Background Image -->
-        <div class="hero-img-bg">
-          <img src="https://unsplash.com" alt="Stadium">
-        </div>
-        <div class="hero-card">
-          <span class="tag">Trending</span>
-          <h4>Official Football Jersey</h4>
-          <div class="price-row">
-            <span class="price"><del>$89</del> $69</span>
+      <div class="hero-logo-wrap">
+        <img src="images/elite_logo.jpeg" alt="Elite Sports Hub" class="hero-logo-img">
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="marquee">
+  <span>FREE DELIVERY ON ORDERS ABOVE RS. 3000 &nbsp;★&nbsp; A-GRADE QUALITY GUARANTEED &nbsp;★&nbsp; CASH ON DELIVERY AVAILABLE &nbsp;★&nbsp; 18 JERSEYS IN STOCK &nbsp;★&nbsp; FREE DELIVERY ON ORDERS ABOVE RS. 3000 &nbsp;★&nbsp; A-GRADE QUALITY GUARANTEED &nbsp;★&nbsp; CASH ON DELIVERY AVAILABLE &nbsp;★&nbsp; 18 JERSEYS IN STOCK &nbsp;★&nbsp;</span>
+</div>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="section-tag">All Jerseys</span>
+        <h2 id="section-title">Top Picks This Week</h2>
+      </div>
+      <p>Fan favorites across football and cricket, restocked weekly.</p>
+    </div>
+    <div class="grid" id="product-grid"></div>
+  </div>
+</section>
+
+<section class="section features">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="section-tag">Why Elite Sports Hub</span>
+        <h2>Built For True Fans</h2>
+      </div>
+    </div>
+    <div class="feat-grid">
+      <div class="feat">
+        <div class="num">01 — QUALITY</div>
+        <h3>Premium Fabric</h3>
+        <p>Top-grade, breathable material with stitching that holds up to match-day intensity and everyday wear.</p>
+      </div>
+      <div class="feat">
+        <div class="num">02 — PRICE</div>
+        <h3>Fair, Honest Pricing</h3>
+        <p>Pro-level look without the pro-level price tag — quality jerseys that don't break your budget.</p>
+      </div>
+      <div class="feat">
+        <div class="num">03 — FIT</div>
+        <h3>Every Size, Perfect Fit</h3>
+        <p>Full size range with a sizing guide — and our team helps you pick the right fit over chat.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="banner">
+    <div class="banner-copy">
+      <span class="section-tag">Limited Edition</span>
+      <h2>Legacy Mashup Series</h2>
+      <p>One jersey, two legacies — our crossover collection blends iconic clubs into a single, unforgettable piece. Designed for collectors and die-hard fans.</p>
+      <a href="#product-grid" class="btn-primary">Shop Limited Drop</a>
+    </div>
+    <div class="banner-visual"><div class="jersey-number">7</div></div>
+  </div>
+</section>
+
+<section class="section how-it-works">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="section-tag">Simple Process</span>
+        <h2>Ordering Made Easy</h2>
+      </div>
+      <p>No complicated checkout — just three quick steps from cart to your doorstep.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-icon">🛒</div>
+        <div class="step-line"></div>
+        <h3>Add to Cart</h3>
+        <p>Pick your jersey, choose your size, and add it to your cart.</p>
+      </div>
+      <div class="step">
+        <div class="step-icon">📲</div>
+        <div class="step-line"></div>
+        <h3>Confirm on WhatsApp</h3>
+        <p>Send your order details to us on WhatsApp — we confirm size & availability.</p>
+      </div>
+      <div class="step">
+        <div class="step-icon">🚚</div>
+        <h3>Get It Delivered</h3>
+        <p>Sit back while we pack and deliver your jersey straight to your door.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT MODAL -->
+<div class="modal-overlay" id="productModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-gallery">
+      <img id="modal-img" src="" alt="">
+      <div id="modal-toggle" style="display:none; position:absolute; bottom:12px; left:50%; transform:translateX(-50%); gap:8px; background:rgba(0,0,0,0.6); padding:6px 10px; border-radius:20px;">
+        <button onclick="showFront()" id="btn-front" style="background:#fff; color:#000; border:none; padding:5px 14px; border-radius:12px; font-size:11px; font-weight:700; cursor:pointer;">FRONT</button>
+        <button onclick="showBack()" id="btn-back" style="background:transparent; color:#fff; border:none; padding:5px 14px; border-radius:12px; font-size:11px; font-weight:700; cursor:pointer;">BACK</button>
+      </div>
+    </div>
+    <div class="modal-info">
+      <span class="section-tag" id="modal-tag">Football Jersey</span>
+      <h2 id="modal-name"></h2>
+      <div class="modal-price-row">
+        <span class="modal-price-now" id="modal-price"></span>
+        <span class="modal-price-old" id="modal-old"></span>
+        <span class="modal-save" id="modal-save"></span>
+      </div>
+      <div class="modal-size-label">Select Size</div>
+      <div class="modal-sizes" id="modal-sizes">
+        <button class="size-btn" onclick="selectSize(this,'S')">S</button>
+        <button class="size-btn active" onclick="selectSize(this,'M')">M</button>
+        <button class="size-btn" onclick="selectSize(this,'L')">L</button>
+        <button class="size-btn" onclick="selectSize(this,'XL')">XL</button>
+      </div>
+      <button class="modal-add-btn" id="modal-add-btn">Add to Cart</button>
+      <div class="modal-features">
+        <span>🚚 Free delivery above Rs. 3000</span>
+        <span>💵 Cash on Delivery</span>
+        <span>✅ Premium Quality</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-logo"><img src="images/elite_logo.jpeg" alt="Elite Sports Hub"></div>
+        <p style="font-size:14px; line-height:1.7; max-width:280px; margin-top:10px;">Premium sportswear delivered across Nepal. Football, cricket & special edition jerseys for true fans.</p>
+        <p style="font-size:12px; color:#555; margin-top:8px; letter-spacing:1px; text-transform:uppercase;">Wear The Victory</p>
+      </div>
+      <div>
+        <h5>Shop</h5>
+        <ul>
+          <li><a href="#">New Arrivals</a></li>
+          <li><a href="#">Football Jerseys</a></li>
+          <li><a href="#">IPL Jerseys</a></li>
+          <li><a href="#">Special Edition</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Support</h5>
+        <ul>
+          <li><a href="#">Size Guide</a></li>
+          <li><a href="#">Shipping Policy</a></li>
+          <li><a href="#">Refund Policy</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Contact</h5>
+        <ul>
+          <li>Butwal, Nepal</li>
+          <li>+977 98XXXXXXXX</li>
+          <li>hello@elitesportshub.com</li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Elite Sports Hub. All rights reserved.</span>
+      <span>Facebook · Instagram · WhatsApp</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const products = [
+    {id:"p1",  name:"Manchester United Retro — AIG Edition",           price:1500, old:1850, badge:"Save 350", img:"images/man-utd-aig-jersey.jpg",              back:null,                                     cat:["football","retro"]},
+    {id:"p7",  name:"Manchester United Black — Ronaldo #7",            price:1500, old:1850, badge:"Save 350", img:"images/man-utd-black-ronaldo-jersey.jpg",     back:null,                                     cat:["football","retro"]},
+    {id:"p3",  name:"Barcelona Unicef — UCL Final Edition",            price:2000, old:2500, badge:"Save 500", img:"images/barcelona-unicef-jersey.jpg",          back:null,                                     cat:["football","retro","special"]},
+    {id:"p6",  name:"Barcelona — Lamine Yamal #19 Special Edition",   price:1850, old:2200, badge:"Save 350", img:"images/barcelona-lamine-yamal-jersey.jpg",    back:null,                                     cat:["football","special","new"]},
+    {id:"p4",  name:"Real Madrid Black Dragon Jersey",                 price:2000, old:2500, badge:"Save 500", img:"images/real-madrid-dragon-jersey.jpg",        back:null,                                     cat:["football","special"]},
+    {id:"p2",  name:"Real Madrid Home — bwin Edition (Lady Fit)",      price:1500, old:1850, badge:"Save 350", img:"images/real-madrid-bwin-jersey.jpg",          back:null,                                     cat:["football","retro"]},
+    {id:"p5",  name:"Al Nassr — Ronaldo #7 Edition",                  price:1300, old:1850, badge:"Save 550", img:"images/alnassr-ronaldo-jersey.jpg",           back:null,                                     cat:["football"]},
+    {id:"p8",  name:"AC Milan Away White — Maldini #3 (UCL Edition)", price:1500, old:2000, badge:"Save 500", img:"images/ac-milan-white-maldini.jpeg",          back:"images/ac-milan-maldini-back.jpeg",      cat:["football","retro","new"]},
+    {id:"p9",  name:"Portugal Home Red — 2024 Edition",               price:1500, old:1800, badge:"Save 300", img:"images/portugal-home-red.jpeg",               back:"images/portugal-home-back.jpeg",         cat:["football","new"]},
+    {id:"p10", name:"Real Madrid bwin Gold Long Sleeve — Ronaldo #7", price:1650, old:2000, badge:"Save 350", img:"images/real-madrid-bwin-gold-ls.jpeg",        back:"images/real-madrid-bwin-gold-back.jpeg", cat:["football","retro","new"]},
+    {id:"p11", name:"Real Madrid Fly Emirates — Ronaldo #7 LS",       price:1650, old:2000, badge:"Save 350", img:"images/real-madrid-fly-emirates-ls.jpeg",     back:"images/real-madrid-fly-emirates-back.jpeg",cat:["football","retro","new"]},
+    {id:"p12", name:"Argentina Black Snake Edition — Messi #10",      price:1500, old:1800, badge:"Save 300", img:"images/argentina-black-pink-snake-messi.jpeg",back:"images/argentina-snake-back.jpeg",       cat:["football","special","new"]},
+    {id:"p13", name:"Argentina Black Blue Flame — Messi #10",         price:1500, old:1800, badge:"Save 300", img:"images/argentina-black-blue-flame-messi.jpeg",back:"images/argentina-blue-flame-back.jpeg",  cat:["football","special","new"]},
+    {id:"p14", name:"Argentina World Cup 2022 Home — FIFA Badge",     price:1500, old:1800, badge:"Save 300", img:"images/argentina-wc2022-home.jpeg",           back:"images/argentina-wc2022-back.jpeg",      cat:["football","new"]},
+    {id:"p15", name:"Brazil Home Yellow — Neymar Jr #10",             price:1500, old:1800, badge:"Save 300", img:"images/brazil-yellow-neymar.jpeg",            back:"images/brazil-yellow-back.jpeg",         cat:["football","new"]},
+    {id:"p17", name:"Argentina Light Blue — Messi #19 Edition",       price:1500, old:1800, badge:"Save 300", img:"images/argentina-lightblue-messi19.jpeg",     back:"images/argentina-lightblue-back.jpeg",   cat:["football","new"]},
+    {id:"p16", name:"RCB IPL — Virat Kohli #18 Edition",              price:1350, old:1700, badge:"Save 350", img:"images/rcb-nothing-smartphones.jpeg",         back:"images/rcb-virat-kohli-18.jpeg",         cat:["ipl","new"]},
+  ];
+  const grid = document.getElementById('product-grid');
+  const sectionTitle = document.getElementById('section-title');
+  let currentCat = 'all';
+
+  function renderProducts(cat){
+    currentCat = cat;
+    const filtered = cat === 'all' ? products : products.filter(p=>p.cat.includes(cat));
+    const labels = {all:'All Jerseys', new:'New Arrivals', football:'Football Jerseys', ipl:'Cricket / IPL', special:'Special Edition', retro:'Retro Collection'};
+    if(sectionTitle) sectionTitle.textContent = labels[cat] || 'All Jerseys';
+    grid.innerHTML = '';
+    if(filtered.length === 0){
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px 0;color:#999;font-size:15px;">No jerseys in this category yet — coming soon!</div>`;
+      return;
+    }
+    filtered.forEach(p=>{
+      const card = document.createElement('div');
+      card.className = 'card fade-up';
+      card.dataset.id = p.id;
+      card.innerHTML = `
+        <div class="card-img" onclick="openModal('${p.id}')">
+          <span class="badge">${p.badge}</span>
+          <img src="${p.img}" alt="${p.name}" loading="lazy">
+          <div class="card-overlay">
+            <span class="view-label">👁 View Details</span>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Products Section -->
-  <section class="section wrap">
-    <div class="section-head">
-      <span class="section-tag">Featured Products</span>
-      <h2>Our Premium Jerseys</h2>
-    </div>
-    
-    <div class="grid">
-      <!-- Product 1 -->
-      <div class="card">
-        <div class="card-img">
-          <img src="https://unsplash.com" alt="Jersey 1">
-        </div>
         <div class="card-body">
-          <h4>Retro Football Kit</h4>
-          <span class="price-now">$59.99</span>
-          <button class="add-btn">Add to Cart</button>
-        </div>
-      </div>
+          <h4>${p.name}</h4>
+          <div class="price-row">
+            <span class="price-now">Rs. ${p.price.toLocaleString()}</span>
+            <span class="price-old">Rs. ${p.old.toLocaleString()}</span>
+          </div>
+          <select class="size-select" id="size-${p.id}">
+            <option value="S">Size: S</option>
+            <option value="M" selected>Size: M</option>
+            <option value="L">Size: L</option>
+            <option value="XL">Size: XL</option>
+          </select>
+          <button class="add-btn" onclick="addToCart('${p.id}', event)">Add to Cart</button>
+        </div>`;
+      grid.appendChild(card);
+      setTimeout(()=>card.classList.add('visible'), 50);
+    });
+  }
 
-      <!-- Product 2 -->
-      <div class="card">
-        <div class="card-img">
-          <img src="https://unsplash.com" alt="Jersey 2">
-        </div>
-        <div class="card-body">
-          <h4>Classic Sports Jersey</h4>
-          <span class="price-now">$49.99</span>
-          <button class="add-btn">Add to Cart</button>
-        </div>
-      </div>
+  function filterCat(cat, el){
+    // Update nav links
+    document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+    document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('active'));
+    if(el){ el.classList.add('active'); }
+    // Scroll to products
+    document.getElementById('product-grid').scrollIntoView({behavior:'smooth', block:'start'});
+    renderProducts(cat);
+  }
 
-      <!-- Product 3 -->
-      <div class="card">
-        <div class="card-img">
-          <img src="https://unsplash.com" alt="Jersey 3">
-        </div>
-        <div class="card-body">
-          <h4>Premium Team Wear</h4>
-          <span class="price-now">$64.99</span>
-          <button class="add-btn">Add to Cart</button>
-        </div>
-      </div>
-    </div>
-  </section>
+  // Card overlay hover
+  document.addEventListener('mouseover', e=>{
+    const overlay = e.target.closest('.card-img')?.querySelector('.card-overlay');
+    const label = e.target.closest('.card-img')?.querySelector('.view-label');
+    if(overlay){ overlay.style.background='rgba(0,0,0,0.35)'; if(label) label.style.opacity='1'; }
+  });
+  document.addEventListener('mouseout', e=>{
+    const overlay = e.target.closest('.card-img')?.querySelector('.card-overlay');
+    const label = e.target.closest('.card-img')?.querySelector('.view-label');
+    if(overlay){ overlay.style.background='rgba(0,0,0,0)'; if(label) label.style.opacity='0'; }
+  });
+
+  // MODAL
+  let modalProduct = null;
+  let modalSelectedSize = 'M';
+  function openModal(productId){
+    modalProduct = products.find(p=>p.id===productId);
+    if(!modalProduct) return;
+    showFront();
+    // Show/hide toggle
+    const toggle = document.getElementById('modal-toggle');
+    toggle.style.display = modalProduct.back ? 'flex' : 'none';
+    document.getElementById('modal-name').textContent = modalProduct.name;
+    document.getElementById('modal-price').textContent = `Rs. ${modalProduct.price.toLocaleString()}`;
+    document.getElementById('modal-old').textContent = `Rs. ${modalProduct.old.toLocaleString()}`;
+    document.getElementById('modal-save').textContent = modalProduct.badge;
+    const tag = modalProduct.name.includes('RCB')||modalProduct.name.includes('IPL') ? 'Cricket / IPL' : 'Football Jersey';
+    document.getElementById('modal-tag').textContent = tag;
+    modalSelectedSize = 'M';
+    document.querySelectorAll('.size-btn').forEach(b=>b.classList.toggle('active', b.textContent==='M'));
+    document.getElementById('modal-add-btn').onclick = ()=>{ addToCartModal(); };
+    document.getElementById('productModal').classList.add('open');
+    document.body.style.overflow='hidden';
+  }
+  function showFront(){
+    if(!modalProduct) return;
+    document.getElementById('modal-img').src = modalProduct.img;
+    document.getElementById('btn-front').style.background='#fff';
+    document.getElementById('btn-front').style.color='#000';
+    document.getElementById('btn-back').style.background='transparent';
+    document.getElementById('btn-back').style.color='#fff';
+  }
+  function showBack(){
+    if(!modalProduct || !modalProduct.back) return;
+    document.getElementById('modal-img').src = modalProduct.back;
+    document.getElementById('btn-back').style.background='#fff';
+    document.getElementById('btn-back').style.color='#000';
+    document.getElementById('btn-front').style.background='transparent';
+    document.getElementById('btn-front').style.color='#fff';
+  }
+  function closeModal(){
+    document.getElementById('productModal').classList.remove('open');
+    document.body.style.overflow='';
+  }
+  document.getElementById('productModal').addEventListener('click', e=>{
+    if(e.target===document.getElementById('productModal')) closeModal();
+  });
+  function selectSize(btn, size){
+    modalSelectedSize = size;
+    document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  function addToCartModal(){
+    if(!modalProduct) return;
+    const cart = getCart();
+    const existing = cart.find(item=>item.id===modalProduct.id && item.size===modalSelectedSize);
+    if(existing){ existing.qty+=1; } else { cart.push({id:modalProduct.id, name:modalProduct.name, price:modalProduct.price, size:modalSelectedSize, qty:1, img:modalProduct.img}); }
+    saveCart(cart);
+    const btn = document.getElementById('modal-add-btn');
+    btn.textContent='Added ✓'; btn.style.background='#1DA851';
+    setTimeout(()=>{ btn.textContent='Add to Cart'; btn.style.background=''; closeModal(); }, 1000);
+  }
+
+  // SCROLL FADE-UP for static sections
+  const observer = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); } });
+  }, {threshold:0.1});
+  document.querySelectorAll('.feat, .step').forEach(el=>{
+    el.classList.add('fade-up');
+    observer.observe(el);
+  });
+
+  function getCart(){
+    return JSON.parse(localStorage.getItem('esh_cart') || '[]');
+  }
+  function saveCart(cart){
+    localStorage.setItem('esh_cart', JSON.stringify(cart));
+    updateCartCount();
+  }
+  function updateCartCount(){
+    const cart = getCart();
+    const count = cart.reduce((s,i)=>s+i.qty,0);
+    document.querySelector('.cart-btn').textContent = `Cart (${count})`;
+  }
+  function addToCart(productId, event){
+    const product = products.find(p => p.id === productId);
+    const sizeEl = document.getElementById(`size-${productId}`);
+    const size = sizeEl ? sizeEl.value : 'M';
+    const cart = getCart();
+    const existing = cart.find(item => item.id === productId && item.size === size);
+    if(existing){ existing.qty += 1; } else { cart.push({id:product.id, name:product.name, price:product.price, size:size, qty:1, img:product.img}); }
+    saveCart(cart);
+    if(event && event.target){
+      const btn = event.target;
+      const original = btn.textContent;
+      btn.textContent = 'Added ✓';
+      btn.style.background = '#1DA851';
+      setTimeout(()=>{ btn.textContent = original; btn.style.background = ''; }, 1200);
+    }
+  }
+
+  // Initial render — show all products
+  renderProducts('all');
+  updateCartCount();
+</script>
 
 </body>
 </html>
