@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cart — Elite Sports Hub</title>
+<style>
+  :root{
+    --red:#C8102E;
+    --red-dark:#8E0B20;
+    --ink:#161616;
+    --paper:#FFFFFF;
+    --fog:#F4F4F4;
+    --line:#E7E7E7;
+    --font-display: 'Archivo Black', Arial, sans-serif;
+    --font-body: 'Inter', Arial, sans-serif;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&display=swap');
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:var(--font-body); color:var(--ink); background:var(--paper); -webkit-font-smoothing:antialiased;}
+  img{max-width:100%; display:block;}
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 24px;}
+
+  header{position:sticky; top:0; z-index:50; background:var(--paper); border-bottom:1px solid var(--line);}
+  .nav{display:flex; align-items:center; justify-content:space-between; padding:18px 24px; max-width:1180px; margin:0 auto;}
+  .logo{font-family:var(--font-display); font-size:20px; letter-spacing:0.5px; display:flex; align-items:center; gap:8px;}
+  .logo .dot{width:10px; height:10px; background:var(--red); display:inline-block; border-radius:50%;}
+  .nav-links{display:flex; gap:32px; font-weight:600; font-size:14px; text-transform:uppercase; letter-spacing:0.5px;}
+  .nav-links a:hover{color:var(--red);}
+  .cart-btn{background:var(--ink); color:#fff; padding:10px 20px; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; border-radius:2px;}
+
+  .page-head{padding:40px 24px 0;}
+  .breadcrumb{font-size:13px; color:#999; margin-bottom:8px;}
+  .breadcrumb a:hover{color:var(--red);}
+  .page-head h1{font-family:var(--font-display); font-size:clamp(28px,4vw,42px);}
+
+  .section{padding:32px 24px 100px;}
+  .cart-layout{display:grid; grid-template-columns:1.7fr 1fr; gap:36px; align-items:start;}
+
+  /* CART ITEMS */
+  .cart-panel{border:1px solid var(--line); border-radius:4px; overflow:hidden;}
+  .cart-row{display:grid; grid-template-columns:84px 1fr auto auto auto; gap:18px; align-items:center; padding:20px; border-bottom:1px solid var(--line);}
+  .cart-row:last-child{border-bottom:none;}
+  .item-thumb{width:84px; height:84px; background:var(--fog); border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:28px; color:#ccc;}
+  .item-info h4{font-size:14px; font-weight:600; margin-bottom:6px;}
+  .item-info .meta{font-size:12px; color:#999;}
+  .item-price{font-weight:800; font-size:14px; white-space:nowrap;}
+  .qty-control{display:flex; align-items:center; border:1px solid var(--line); border-radius:3px; overflow:hidden;}
+  .qty-control button{width:30px; height:30px; background:#fff; border:none; font-size:15px; font-weight:700; cursor:pointer;}
+  .qty-control button:hover{background:var(--fog);}
+  .qty-control span{width:32px; text-align:center; font-size:13px; font-weight:600;}
+  .remove-btn{color:#999; font-size:18px; cursor:pointer; line-height:1; padding:6px;}
+  .remove-btn:hover{color:var(--red);}
+
+  .continue-row{display:flex; justify-content:space-between; align-items:center; padding:18px 4px;}
+  .continue-link{font-size:13px; font-weight:700; color:var(--ink); display:flex; align-items:center; gap:6px;}
+  .continue-link:hover{color:var(--red);}
+
+  /* SUMMARY */
+  .summary{border:1px solid var(--line); border-radius:4px; padding:26px;}
+  .summary h3{font-family:var(--font-display); font-size:18px; margin-bottom:20px;}
+  .summary-row{display:flex; justify-content:space-between; font-size:14px; padding:10px 0; color:#555;}
+  .summary-row.total{border-top:1px solid var(--line); margin-top:8px; padding-top:16px; font-weight:800; font-size:16px; color:var(--ink);}
+  .promo{display:flex; gap:8px; margin:18px 0;}
+  .promo input{flex:1; border:1px solid var(--line); border-radius:3px; padding:11px 12px; font-size:13px; font-family:var(--font-body);}
+  .promo input:focus{outline:1px solid var(--ink);}
+  .promo button{background:var(--ink); color:#fff; border:none; padding:0 18px; font-size:12px; font-weight:700; text-transform:uppercase; border-radius:3px; cursor:pointer;}
+  .promo button:hover{background:var(--red);}
+  .checkout-btn{width:100%; background:var(--red); color:#fff; border:none; padding:16px; font-size:14px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; border-radius:3px; cursor:pointer; margin-top:8px;}
+  .checkout-btn:hover{background:var(--red-dark);}
+  .whatsapp-btn{background:#25D366;}
+  .whatsapp-btn:hover{background:#1DA851;}
+  .trust-row{display:flex; gap:14px; margin-top:18px; font-size:12px; color:#999; justify-content:center; flex-wrap:wrap;}
+
+  /* CHECKOUT FORM (toggled) */
+  .checkout-form{display:none; border:1px solid var(--line); border-radius:4px; padding:26px; margin-top:20px;}
+  .checkout-form.active{display:block;}
+  .checkout-form h3{font-family:var(--font-display); font-size:18px; margin-bottom:18px;}
+  .form-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .form-grid .full{grid-column:1/-1;}
+  .form-grid label{font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; color:#777; display:block; margin-bottom:6px;}
+  .form-grid input, .form-grid select{width:100%; border:1px solid var(--line); border-radius:3px; padding:11px 12px; font-size:14px; font-family:var(--font-body);}
+  .form-grid input:focus, .form-grid select:focus{outline:1px solid var(--ink);}
+  .pay-options{display:flex; gap:10px; margin:18px 0;}
+  .pay-opt{flex:1; border:1px solid var(--line); border-radius:3px; padding:14px; text-align:center; font-size:13px; font-weight:600; cursor:pointer;}
+  .pay-opt.selected{border-color:var(--red); background:#FFF5F6; color:var(--red);}
+
+  .empty-state{text-align:center; padding:80px 24px; display:none;}
+  .empty-state.active{display:block;}
+  .empty-state .icon{font-size:48px; margin-bottom:16px;}
+  .empty-state h3{font-family:var(--font-display); font-size:22px; margin-bottom:10px;}
+  .empty-state p{color:#888; margin-bottom:24px; font-size:14px;}
+  .btn-primary{display:inline-block; background:var(--red); color:#fff; padding:14px 26px; font-weight:700; font-size:13px; text-transform:uppercase; letter-spacing:0.5px; border-radius:3px;}
+  .btn-primary:hover{background:var(--red-dark);}
+
+  footer{background:var(--ink); color:#aaa; padding:30px 24px; text-align:center; font-size:13px;}
+
+  @media (max-width:880px){
+    .nav-links{display:none;}
+    .cart-layout{grid-template-columns:1fr;}
+    .cart-row{grid-template-columns:60px 1fr; row-gap:10px;}
+    .cart-row .item-price{grid-column:2; }
+    .cart-row .qty-control{grid-column:2;}
+    .cart-row .remove-btn{position:absolute; margin-left:calc(100% - 30px);}
+    .form-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a href="index.html" class="logo"><img src="images/elite_logo.jpeg" alt="Elite Sports Hub" style="height:46px;width:auto;"></a>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="#">Football</a>
+      <a href="#">Cricket/IPL</a>
+      <a href="#">Special Edition</a>
+    </nav>
+    <a href="#" class="cart-btn">Cart (3)</a>
+  </div>
+</header>
+
+<div class="page-head">
+  <div class="breadcrumb"><a href="index.html">Home</a> / Cart</div>
+  <h1>Your Cart</h1>
+</div>
+
+<section class="section">
+  <div class="wrap">
+
+    <div id="cart-view">
+      <div class="cart-layout">
+        <div>
+          <div class="cart-panel" id="cart-items"></div>
+          <div class="continue-row">
+            <a href="index.html" class="continue-link">← Continue Shopping</a>
+          </div>
+        </div>
+
+        <div>
+          <div class="summary">
+            <h3>Order Summary</h3>
+            <div class="summary-row"><span>Subtotal</span><span id="sum-subtotal">Rs. 0</span></div>
+            <div class="summary-row"><span>Delivery</span><span id="sum-delivery">Rs. 100</span></div>
+            <div class="summary-row total"><span>Total</span><span id="sum-total">Rs. 0</span></div>
+            <div class="promo">
+              <input type="text" placeholder="Promo code">
+              <button>Apply</button>
+            </div>
+            <button class="checkout-btn" onclick="showCheckout()">Proceed to Checkout</button>
+            <div class="trust-row">
+              <span>🚚 Free delivery above Rs. 3000</span>
+              <span>💵 Cash on Delivery</span>
+            </div>
+          </div>
+
+          <div class="checkout-form" id="checkout-form">
+            <h3>Delivery Details</h3>
+            <div class="form-grid">
+              <div>
+                <label>Full Name</label>
+                <input type="text" id="cust-name" placeholder="Your name">
+              </div>
+              <div>
+                <label>Phone Number</label>
+                <input type="text" id="cust-phone" placeholder="98XXXXXXXX">
+              </div>
+              <div class="full">
+                <label>Delivery Address</label>
+                <input type="text" id="cust-address" placeholder="Street, area">
+              </div>
+              <div>
+                <label>City</label>
+                <input type="text" id="cust-city" placeholder="e.g. Butwal">
+              </div>
+              <div>
+                <label>Province</label>
+                <select id="cust-province">
+                  <option>Lumbini</option>
+                  <option>Bagmati</option>
+                  <option>Gandaki</option>
+                  <option>Koshi</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            </div>
+
+            <h3 style="margin-top:24px;">Order Method</h3>
+            <p style="font-size:13px; color:#777; margin-bottom:16px; line-height:1.6;">We'll confirm your order over WhatsApp. Just fill your details and tap the button below — your order summary will be ready to send.</p>
+
+            <button class="checkout-btn whatsapp-btn" onclick="placeOrder()">
+              📲 Order via WhatsApp — Rs. <span id="checkout-total">0</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" id="empty-state">
+      <div class="icon">🛒</div>
+      <h3>Your cart is empty</h3>
+      <p>Looks like you haven't added any jerseys yet.</p>
+      <a href="index.html" class="btn-primary">Start Shopping</a>
+    </div>
+
+  </div>
+</section>
+
+<footer>© 2026 Elite Sports Hub. All rights reserved.</footer>
+
+<script>
+  let cartItems = JSON.parse(localStorage.getItem('esh_cart') || '[]');
+
+  function persistCart(){
+    localStorage.setItem('esh_cart', JSON.stringify(cartItems));
+  }
+
+  function render(){
+    const container = document.getElementById('cart-items');
+    const cartView = document.getElementById('cart-view');
+    const emptyState = document.getElementById('empty-state');
+
+    if(cartItems.length === 0){
+      cartView.style.display = 'none';
+      emptyState.classList.add('active');
+      return;
+    }
+    cartView.style.display = 'block';
+    emptyState.classList.remove('active');
+
+    container.innerHTML = cartItems.map((item, i) => `
+      <div class="cart-row">
+        <div class="item-thumb">${item.img ? `<img src="${item.img}" alt="${item.name}" style="width:100%;height:100%;object-fit:cover;border-radius:4px;">` : (item.icon || '👕')}</div>
+        <div class="item-info">
+          <h4>${item.name}</h4>
+          <div class="meta">Size: ${item.size}</div>
+        </div>
+        <div class="item-price">Rs. ${(item.price * item.qty).toLocaleString()}</div>
+        <div class="qty-control">
+          <button onclick="changeQty(${i}, -1)">−</button>
+          <span>${item.qty}</span>
+          <button onclick="changeQty(${i}, 1)">+</button>
+        </div>
+        <div class="remove-btn" onclick="removeItem(${i})">✕</div>
+      </div>
+    `).join('');
+
+    const subtotal = cartItems.reduce((s, item) => s + item.price * item.qty, 0);
+    const delivery = subtotal >= 3000 || subtotal === 0 ? 0 : 100;
+    const total = subtotal + delivery;
+
+    document.getElementById('sum-subtotal').textContent = `Rs. ${subtotal.toLocaleString()}`;
+    document.getElementById('sum-delivery').textContent = delivery === 0 ? 'Free' : `Rs. ${delivery}`;
+    document.getElementById('sum-total').textContent = `Rs. ${total.toLocaleString()}`;
+    document.getElementById('checkout-total').textContent = total.toLocaleString();
+    document.querySelector('.cart-btn').textContent = `Cart (${cartItems.reduce((s,i)=>s+i.qty,0)})`;
+  }
+
+  function changeQty(i, delta){
+    cartItems[i].qty = Math.max(1, cartItems[i].qty + delta);
+    persistCart();
+    render();
+  }
+  function removeItem(i){
+    cartItems.splice(i, 1);
+    persistCart();
+    render();
+  }
+  function showCheckout(){
+    document.getElementById('checkout-form').classList.add('active');
+    document.getElementById('checkout-form').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+  function placeOrder(){
+    const name = document.getElementById('cust-name').value.trim();
+    const phone = document.getElementById('cust-phone').value.trim();
+    const address = document.getElementById('cust-address').value.trim();
+    const city = document.getElementById('cust-city').value.trim();
+    const province = document.getElementById('cust-province').value;
+
+    if(!name || !phone || !address || !city){
+      alert('Please fill in your name, phone, address and city before ordering.');
+      return;
+    }
+
+    const subtotal = cartItems.reduce((s, item) => s + item.price * item.qty, 0);
+    const delivery = subtotal >= 3000 || subtotal === 0 ? 0 : 100;
+    const total = subtotal + delivery;
+
+    let msg = `Hello Elite Sports Hub! I'd like to place an order:\n\n`;
+    cartItems.forEach(item => {
+      msg += `• ${item.name} (Size: ${item.size}) x${item.qty} — Rs. ${(item.price*item.qty).toLocaleString()}\n`;
+    });
+    msg += `\nSubtotal: Rs. ${subtotal.toLocaleString()}`;
+    msg += `\nDelivery: ${delivery === 0 ? 'Free' : 'Rs. ' + delivery}`;
+    msg += `\nTotal: Rs. ${total.toLocaleString()}`;
+    msg += `\n\nName: ${name}`;
+    msg += `\nPhone: ${phone}`;
+    msg += `\nAddress: ${address}, ${city}, ${province}`;
+
+    const whatsappNumber = "9779821952621";
+    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank');
+
+    cartItems = [];
+    persistCart();
+    render();
+  }
+
+  document.querySelectorAll('.pay-opt').forEach(opt=>{
+    opt.addEventListener('click', ()=>{
+      document.querySelectorAll('.pay-opt').forEach(o=>o.classList.remove('selected'));
+      opt.classList.add('selected');
+    });
+  });
+
+  render();
+</script>
+
+</body>
+</html>
