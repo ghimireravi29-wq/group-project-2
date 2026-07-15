@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elite Sports Hub — Premium Jerseys</title>
+<style>
+  :root{
+    --red:#C8102E;
+    --red-dark:#8E0B20;
+    --ink:#161616;
+    --paper:#FFFFFF;
+    --fog:#F4F4F4;
+    --line:#E7E7E7;
+    --font-display: 'Archivo Black', Arial, sans-serif;
+    --font-body: 'Inter', Arial, sans-serif;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&display=swap');
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:var(--font-body); color:var(--ink); background:var(--paper); -webkit-font-smoothing:antialiased;}
+  img{max-width:100%; display:block;}
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 24px;}
+
+  /* HEADER */
+  header{position:sticky; top:0; z-index:50; background:var(--paper); border-bottom:1px solid var(--line);}
+  .nav{display:flex; align-items:center; justify-content:space-between; padding:18px 24px;}
+  .logo img{height:52px; width:auto; display:block;}
+  .logo{font-family:var(--font-display); font-size:20px; letter-spacing:0.5px; display:flex; align-items:center; gap:8px;}
+  .nav-links a{position:relative; padding-bottom:4px; cursor:pointer;}
+  .nav-links a:hover{color:var(--red);}
+  .nav-links a.active{color:var(--red);}
+  .nav-links a.active::after{content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:var(--red); border-radius:2px;}
+  /* CATEGORY CHIPS (mobile) */
+  .cat-chips{display:none; gap:8px; overflow-x:auto; padding:0 24px 16px; scrollbar-width:none;}
+  .cat-chip{background:var(--fog); border:1px solid var(--line); border-radius:20px; padding:7px 16px; font-size:12px; font-weight:700; white-space:nowrap; cursor:pointer; flex-shrink:0; transition:all .15s;}
+  .cat-chip.active{background:var(--ink); color:#fff; border-color:var(--ink);}
+  @media(max-width:900px){.cat-chips{display:flex;}}
+  /* HERO LOGO FIX - remove white bg using mix-blend-mode */
+  .hero-logo-img{width:100%; height:100%; object-fit:cover; filter:brightness(1.05);}
+  .nav-cta{display:flex; align-items:center; gap:18px;}
+  .cart-btn{background:var(--ink); color:#fff; padding:10px 20px; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; border-radius:2px;}
+  .cart-btn:hover{background:var(--red);}
+
+  /* HERO */
+  .hero{position:relative; background:var(--ink); color:#fff; overflow:hidden;}
+  .hero-grid{display:grid; grid-template-columns:1.1fr 1fr; align-items:center; min-height:560px;}
+  .hero-copy{padding:60px 24px 60px 0; position:relative; z-index:2;}
+  .eyebrow{display:inline-flex; align-items:center; gap:8px; font-size:12px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--red); margin-bottom:18px;}
+  .eyebrow::before{content:''; width:24px; height:2px; background:var(--red);}
+  .hero h1{font-family:var(--font-display); font-size:clamp(38px,5.5vw,64px); line-height:0.98; letter-spacing:-0.5px; margin-bottom:20px;}
+  .hero h1 span{color:var(--red);}
+  .hero p{font-size:16px; color:#cfcfcf; max-width:420px; margin-bottom:32px; line-height:1.6;}
+  .hero-btns{display:flex; gap:14px;}
+  .btn-primary{background:var(--red); color:#fff; padding:15px 28px; font-weight:700; font-size:14px; text-transform:uppercase; letter-spacing:0.5px; border-radius:2px; transition:background .2s;}
+  .btn-primary:hover{background:var(--red-dark);}
+  .btn-ghost{border:1px solid #555; color:#fff; padding:15px 28px; font-weight:700; font-size:14px; text-transform:uppercase; letter-spacing:0.5px; border-radius:2px;}
+  .btn-ghost:hover{border-color:#fff;}
+  .hero-visual{position:relative; height:100%; min-height:560px; background:linear-gradient(160deg,#1a1a1a,#0c0c0c); overflow:hidden;}
+  .hero-logo-bg{position:absolute; inset:0; display:flex; align-items:center; justify-content:center;}
+  .hero-logo-bg img{width:90%; height:90%; object-fit:contain; opacity:0.06; filter:grayscale(100%) brightness(2);}
+  .hero-logo-wrap{position:absolute; top:46%; left:50%; transform:translate(-50%,-50%); z-index:3; width:200px; height:200px; border-radius:50%; overflow:hidden; border:3px solid rgba(200,16,46,0.6); box-shadow:0 0 40px rgba(200,16,46,0.3);}
+  .hero-logo-img{width:100%; height:100%; object-fit:cover; filter:brightness(1.05);}
+  .hero-card{position:absolute; right:60px; top:50%; transform:translateY(-50%); background:#fff; color:var(--ink); width:260px; padding:18px; border-radius:4px; box-shadow:0 20px 60px rgba(0,0,0,0.4);}
+  .hero-card .tag{display:inline-block; background:var(--red); color:#fff; font-size:11px; font-weight:700; padding:3px 8px; border-radius:2px; margin-bottom:10px;}
+  .hero-card h4{font-size:15px; margin-bottom:6px;}
+  .hero-card .price{font-size:14px; font-weight:800;}
+  .hero-card .price del{color:#999; font-weight:400; margin-right:6px;}
+
+  /* MARQUEE */
+  .marquee{background:var(--red); color:#fff; padding:10px 0; overflow:hidden; white-space:nowrap; font-size:13px; font-weight:700; letter-spacing:1px; text-transform:uppercase;}
+  .marquee span{display:inline-block; padding-right:60px;}
+
+  /* SECTION HEADER */
+  .section{padding:80px 24px;}
+  .section-head{display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:36px; flex-wrap:wrap; gap:12px;}
+  .section-head h2{font-family:var(--font-display); font-size:clamp(26px,3.5vw,38px);}
+  .section-head p{color:#777; font-size:14px; max-width:340px;}
+  .section-tag{font-size:12px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--red); margin-bottom:8px; display:block;}
+
+  /* PRODUCT GRID */
+  .grid{display:grid; grid-template-columns:repeat(4,1fr); gap:20px;}
+  .card{border:1px solid var(--line); border-radius:4px; overflow:hidden; background:#fff; transition:transform .2s, box-shadow .2s;}
+  .card:hover{transform:translateY(-4px); box-shadow:0 16px 30px rgba(0,0,0,0.08);}
+  .card-img{aspect-ratio:3/4; background:var(--fog); position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden;}
+  .card-img img{width:100%; height:100%; object-fit:cover; transition:transform .3s;}
+  .card:hover .card-img img{transform:scale(1.05);}
+  .card-img .ph{font-family:var(--font-display); font-size:64px; color:#ddd;}
+  .badge{position:absolute; top:10px; left:10px; background:var(--red); color:#fff; font-size:11px; font-weight:700; padding:4px 9px; border-radius:2px;}
+  .card-body{padding:14px 16px 18px;}
+  .card-body h4{font-size:14px; font-weight:600; margin-bottom:8px; line-height:1.3; min-height:36px;}
+  .price-row{display:flex; align-items:baseline; gap:8px;}
+  .price-now{font-weight:800; font-size:16px;}
+  .price-old{font-size:13px; color:#aaa; text-decoration:line-through;}
+  .add-btn{margin-top:12px; width:100%; padding:10px; background:var(--ink); color:#fff; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; border-radius:2px; border:none; cursor:pointer; transition:background .2s;}
+  .add-btn:hover{background:var(--red);}
+  .size-select{margin-top:10px; width:100%; padding:8px 10px; font-size:12px; border:1px solid var(--line); border-radius:2px; font-family:var(--font-body); background:#fff;}
+
+  /* FEATURES */
+  .features{background:var(--fog);}
+  .feat-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:32px;}
+  .feat{background:#fff; padding:34px 28px; border-radius:4px; border:1px solid var(--line);}
+  .feat .num{font-family:var(--font-display); color:var(--red); font-size:13px; margin-bottom:14px; letter-spacing:1px;}
+  .feat h3{font-size:18px; margin-bottom:10px;}
+  .feat p{font-size:14px; color:#777; line-height:1.6;}
+
+  /* BANNER */
+  .banner{background:var(--ink); color:#fff; display:grid; grid-template-columns:1fr 1fr; align-items:center; border-radius:6px; overflow:hidden; margin:0 24px;}
+  .banner-copy{padding:50px;}
+  .banner-copy span.section-tag{color:var(--red);}
+  .banner-copy h2{font-family:var(--font-display); font-size:32px; margin-bottom:16px; line-height:1.1;}
+  .banner-copy p{color:#bbb; font-size:14px; line-height:1.7; margin-bottom:26px; max-width:420px;}
+</style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="nav wrap">
+      <div class="logo">Elite Sports Hub</div>
+      <div class="nav-links">
+        <a class="active">Home</a>
+      </div>
+      <div class="nav-cta">
+        <a class="cart-btn">Cart (0)</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-grid wrap">
+      <div class="hero-copy">
+        <span class="eyebrow">New Arrival</span>
+        <h1>Premium <span>Jerseys</span> Collection</h1>
+        <p>Get high-quality, comfortable sports jerseys crafted for ultimate performance and style.</p>
+        <div class="hero-btns">
+          <a class="btn-primary">Shop Now</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-card">
+          <span class="tag">Trending</span>
+          <h4>Official Match Jersey</h4>
+          <div class="price-row">
+            <span class="price"><del>$89</del>$69</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>
